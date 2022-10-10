@@ -11,7 +11,7 @@ let arrayDate = [
 ];
 
 /**
- * Массив со временем отправления из пункта И в пункт А
+ * Массив со временем отправления из пункта B в пункт А
  */
 let arrayTimeFromBToA = [
     new Date(Date.parse('2022-01-26T18:30:00.417+03:00')),
@@ -181,7 +181,6 @@ function getResult() {
         infoDuration.innerHTML = 'Это путешествие займет у вас ' + durationTrip + ' минут.';
 
         if (selectedTimeFromBToA) {
-            let a = selectedTimeFromBToA.getTime()+50* 60 * 1000;
             durationTrip = Math.round((selectedTimeFromBToA.getTime()+50* 60 * 1000 - selectedTimeFromAToB.getTime())/60000);
             infoDuration.innerHTML = 'Это путешествие займет у вас ' + durationTrip + ' минут.';
             infoTimeToA.innerHTML = 'Теплоход отправляется из пункта В в ' + (selectedTimeFromBToA.getHours()
