@@ -56,20 +56,28 @@ let durationTrip = 50;
 /**
  * Выбранное время отправления из пункта А в пункт В
  */
-let selectedTimeFromAToB = arrayDate[0].time;
+let selectedTimeFromAToB = arrayDate[0];
 
 /**
  * Выбранное время отправления из пункта В в пункт А
  */
 let selectedTimeFromBToA = null;
 
-arrayDate.forEach(date => {
-    let optionTime = document.createElement('option');
+createOptionsOfTime(arrayDate);
 
-    optionTime.innerText = date.getHours() + ':' + date.getMinutes();
-    optionTime.setAttribute('value', date);
-    timeFromAToBSelect.appendChild(optionTime);
-})
+function createOptionsOfTime(timeArray){
+    while (timeFromAToBSelect.firstChild) {
+        timeFromAToBSelect.removeChild(timeFromAToBSelect.firstChild);
+    }
+
+    timeArray.forEach(date => {
+        let optionTime = document.createElement('option');
+
+        optionTime.innerText = date.getHours() + ':' + date.getMinutes();
+        optionTime.setAttribute('value', date);
+        timeFromAToBSelect.appendChild(optionTime);
+    })
+}
 
 /**
  * Выбор времени отправления из пункта А в В (из элемента select)
@@ -82,6 +90,15 @@ function changeTime(select) {
     if (timeFromBToASelect.style.display === 'block') {
         calculateTimeFromBToA();
     }
+}
+
+/**
+ * Выбор времени отправления из пункта В в А (из элемента select)
+ * @param select - this
+ */
+function changeTimeFromBToA(select) {
+    let selectedTime = select.value;
+    selectedTimeFromBToA = new Date(selectedTime);
 }
 
 /**
@@ -102,18 +119,10 @@ function calculateTimeFromBToA() {
     filteredTimesFromBToA.forEach(time => {
         let optionTimeFromBToA = document.createElement('option');
         optionTimeFromBToA.innerText = time.getHours() + ':' + time.getMinutes();
+        optionTimeFromBToA.value = time;
         timeFromBToASelect.appendChild(optionTimeFromBToA);
     })
 
-}
-
-/**
- * Выбор времени отправления из пункта В в А (из элемента select)
- * @param select - this
- */
-function changeTimeFromBToA(select) {
-    let selectedTime = select.querySelector(`option[value="${select.value}"]`);
-    selectedTimeFromBToA = new Date(selectedTime.getAttribute('value'));
 }
 
 /**
@@ -126,6 +135,14 @@ function changeRoute(select) {
 
     selectedRoute = newSelectedRoute.getAttribute('value');
 
+    if (newSelectedRoute.getAttribute('value') === 'из A в B'){
+        createOptionsOfTime(arrayDate);
+    }
+
+    if (newSelectedRoute.getAttribute('value') === 'из B в A'){
+        createOptionsOfTime(arrayTimeFromBToA);
+    }
+
     if (newSelectedRoute.getAttribute('value') === 'из A в B и обратно в А') {
 
         calculateTimeFromBToA();
@@ -133,7 +150,6 @@ function changeRoute(select) {
         timeFromBToASelect.style.display = 'block';
         labelTimeReverse.style.display = 'block';
         ticketPrice = 1200;
-        durationTrip = 100;
     } else {
         timeFromBToASelect.style.display = 'none';
         labelTimeReverse.style.display = 'none';
@@ -165,12 +181,21 @@ function getResult() {
         infoDuration.innerHTML = 'Это путешествие займет у вас ' + durationTrip + ' минут.';
 
         if (selectedTimeFromBToA) {
-            infoTimeToA.innerHTML = 'Теплоход отправляется из пункта В в ' + (selectedTimeFromBToA.getHours() + ':' + selectedTimeFromBToA.getMinutes()) + ', а прибудет в пункт А в ' + ((new Date(selectedTimeFromBToA.getTime() + 50 * 60 * 1000)).getHours() + ':' + (new Date(selectedTimeFromBToA.getTime() + 50 * 60 * 1000)).getMinutes()) + '.';
+            let a = selectedTimeFromBToA.getTime()+50* 60 * 1000;
+            durationTrip = Math.round((selectedTimeFromBToA.getTime()+50* 60 * 1000 - selectedTimeFromAToB.getTime())/60000);
+            infoDuration.innerHTML = 'Это путешествие займет у вас ' + durationTrip + ' минут.';
+            infoTimeToA.innerHTML = 'Теплоход отправляется из пункта В в ' + (selectedTimeFromBToA.getHours()
+                + ':' + selectedTimeFromBToA.getMinutes()) + ', а прибудет в пункт А в '
+                + ((new Date(selectedTimeFromBToA.getTime() + 50 * 60 * 1000)).getHours() + ':'
+                    + (new Date(selectedTimeFromBToA.getTime() + 50 * 60 * 1000)).getMinutes()) + '.';
         } else {
             infoTimeToA.innerHTML = '';
         }
 
-        infoTimeToB.innerHTML = 'Теплоход отправляется из пункта A в ' + (selectedTimeFromAToB.getHours() + ':' + selectedTimeFromAToB.getMinutes()) + ', а прибудет в пункт В в ' + ((new Date(selectedTimeFromAToB.getTime() + 50 * 60 * 1000)).getHours() + ':' + (new Date(selectedTimeFromAToB.getTime() + 50 * 60 * 1000)).getMinutes()) + '.';
+        infoTimeToB.innerHTML = 'Теплоход отправляется из пункта A в ' + (selectedTimeFromAToB.getHours() + ':'
+            + selectedTimeFromAToB.getMinutes()) + ', а прибудет в пункт В в '
+            + ((new Date(selectedTimeFromAToB.getTime() + 50 * 60 * 1000)).getHours() + ':'
+                + (new Date(selectedTimeFromAToB.getTime() + 50 * 60 * 1000)).getMinutes()) + '.';
 
     }
 }
