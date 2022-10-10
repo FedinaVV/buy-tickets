@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="styles/style.css">
+    <title>BuyTickets</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="container">
+        <div class="form">
+            <div class="form__choice-route">
+                <select onchange="changeRoute(this)" name="route" id="route" class="select-route">
+                    <option value="из A в B">из A в B</option>
+                    <option value="из B в A">из B в A</option>
+                    <option value="из A в B и обратно в А">из A в B и обратно в А</option>
+                </select>
+            </div>
+
+            <div class="form__time-direct">
+                <label for="time">Выберите время</label>
+                <select name="time" id="time" class="select-time" onchange="changeTime(this)"></select>
+            </div>
+
+            <div class="form__time-reverse">
+                <label for="timeBinA" class="label-time-reverse">Выберите время</label>
+                <select name="timeBinA" id="timeBinA" class="select-time-InA" onchange="changeTimeFromBToA(this)"></select>
+            </div>
+
+            <div class="form__quantity">
+                <label for="num">Количество билетов</label>
+                <input type="number" min="1" step="1" id="num" class="input-quantity">
+                <button class="btn" onclick="getResult()">Посчитать</button>
+            </div>
+            <div class="wrapper-info">
+                <div id="info-ticket" class="info-tickets"></div>
+                <div id="info-duration" class="info-tickets"></div>
+                <div id="info-time-to-B" class="info-tickets"></div>
+                <div id="info-time-to-A" class="info-tickets"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/script.js"></script>
+</body>
+</html>
